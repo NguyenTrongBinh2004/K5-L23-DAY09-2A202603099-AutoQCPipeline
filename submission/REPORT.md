@@ -58,14 +58,3 @@ Pipeline kết luận **Hold** (mã thoát `10`, xuất bản nháp tại `submi
 ## 5. Train: raw vs clean (tùy chọn, chấm riêng)
 Chưa chạy (do làm phần pipeline lõi trên máy cá nhân trước, chưa chạy train GPU trên Colab).
 
-## 6. Quyết định và ghi chú AI
-
-**(a) Quyết định cuối & cách chuyển sang Release:**
-- **Quyết định:** **Hold** (dữ liệu ở `submission/export/clean_v1` đã hết lỗi bắt buộc nên dùng test nội bộ được, nhưng chưa đạt chuẩn phát hành).
-- **Để thành Release:** Cần hạ số ảnh còn cảnh báo từ **34/193** (`17.62%`) xuống dưới **10%** (tức tối đa **19/193** ảnh, `warn_ratio <= 0.0984`). Chỉ cần tăng `budget_images` từ `80` lên khoảng **100** ảnh (thêm ~15–20 ảnh duyệt theo đúng thứ tự trong `05_review_queue.csv`) để người duyệt xử lý nốt nhóm `POSSIBLE_FALSE_POS` và `POSSIBLE_LOOSE_BOX` ở đầu hàng đợi còn lại.
-
-**(b) Ghi chú dùng AI:**
-- **Prompt chính:** Nhờ AI hỗ trợ hoàn thiện 4 hàm còn thiếu (`label_format.py`, `gate.py`, `autofix.py`, `second_opinion.py`) theo đúng spec trong docstring của từng file và tổng hợp số liệu từ thư mục `submission/reports/`.
-- **Cách kiểm code AI:** Chạy `pytest` riêng từng file test (`test_label_format.py`, `test_gate.py`, `test_autofix.py`, `test_second_opinion.py`) đến khi pass đủ `79/79` test, sau đó chạy thử toàn pipeline với cả `--budget 0` và ngân sách mặc định `80` để đối chiếu file CSV đầu ra.
-- **1 lần AI sai:** Lúc tổng hợp số liệu báo cáo trên Windows PowerShell, AI đưa câu lệnh Python một dòng bị lồng dấu ngoặc kép làm PowerShell báo lỗi cú pháp và lỗi font tiếng Việt; phải đổi sang dùng block `@' ... '@ | python -X utf8` mới chạy đúng.
-'@ | Set-Content -Encoding UTF8 submission/REPORT.md
