@@ -58,3 +58,11 @@ Pipeline kết luận **Hold** (mã thoát `10`, xuất bản nháp tại `submi
 ## 5. Train: raw vs clean (tùy chọn, chấm riêng)
 Chưa chạy (do làm phần pipeline lõi trên máy cá nhân trước, chưa chạy train GPU trên Colab).
 
+## 6. Quyết định và ghi chú AI
+
+(a) Quyết định cuối: **Hold**. Lô dữ liệu đã sạch lỗi bắt buộc (`0` ERROR), xuất bản nháp tại `submission/export/clean_v1/` để thử nghiệm nội bộ, nhưng chưa đủ điều kiện phát hành chính thức do tỷ lệ cảnh báo còn **17.62%** (`34/193` ảnh), vượt ngưỡng trần **10%** (`warn_ratio_hold = 0.10`). Để chuyển sang **Release**, cần tăng ngân sách duyệt từ `80` lên khoảng `100` ảnh (xử lý thêm ~15–20 ảnh đầu hàng đợi `05_review_queue.csv`) nhằm đưa số ảnh cảnh báo xuống dưới `19/193` ảnh.
+
+(b) Ghi chú dùng AI:
+- **Prompt chính:** Nhờ AI phân tích docstring và hỗ trợ hoàn thiện khung xử lý cho 4 module (`label_format.py`, `gate.py`, `autofix.py`, `second_opinion.py`) đúng đặc tả đầu vào/ra mà không làm thay đổi dữ liệu gốc trong `data/raw/`.
+- **Cách kiểm tra code AI:** Chạy kiểm thử đơn vị bằng `pytest` (`python -m pytest -q`) đến khi pass đủ `79/79` test case, sau đó chạy thử toàn pipeline với cả `--budget 0` lẫn ngân sách mặc định `80` để đối chiếu kết quả trong `submission/reports/`.
+- **Một lần AI sai:** Khi viết câu lệnh Python một dòng để tổng hợp số liệu báo cáo trên Windows PowerShell, AI dùng dấu ngoặc kép lồng nhau gây lỗi cú pháp và lỗi font tiếng Việt; đã tự sửa lại bằng cách chuyển sang khối here-string `@' ... '@ | python -X utf8`.
